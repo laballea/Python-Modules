@@ -3,7 +3,6 @@ from PIL import Image
 from matplotlib import pyplot as plt
 
 class ImageProcessor():
-
 	def load(self, path):
 		"""
 			opens the PNG file specified by the path argument and returns an
