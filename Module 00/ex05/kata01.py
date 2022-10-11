@@ -4,8 +4,10 @@ kata = {
     'PHP': 'Rasmus Lerdorf',
 }
 
+
 def display(var):
     for key, value in var.items():
         print(key + " was created by " + value)
+
 
 display(kata)

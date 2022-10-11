@@ -4,7 +4,7 @@ import sys
 def main(args):
     if (len(args) != 2):
         print("Usage: enter one arguments.")
-    elif (args[1].isdigit() == False):
+    elif (not args[1].isdigit()):
         print("Usage: arguments must be integer.")
     elif (int(args[1]) == 0):
         print("I'm Zero.")

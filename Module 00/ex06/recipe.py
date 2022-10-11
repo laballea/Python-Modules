@@ -2,19 +2,20 @@ cookbook = {
     "Sandwich": {
         "ingredients": ["ham", "bread", "cheese", "tomatoes"],
         "meal": "lunch",
-        "prep_time":10
+        "prep_time": 10
     },
     "Cake": {
         "ingredients": ["flour", "sugar", "eggs"],
         "meal": "dessert",
-        "prep_time":60
+        "prep_time": 60
     },
     "Salad": {
         "ingredients": ["avocado", "arugula", "tomatoes", "spinach"],
         "meal": "lunch",
-        "prep_time":15
+        "prep_time": 15
     },
 }
+
 
 def recipesName():
     for el in cookbook:
@@ -25,9 +26,13 @@ def recipe(name):
     if name in cookbook:
         print("Ingredient list: {}".format(cookbook[name]["ingredients"]))
         print("To be eaten for {}".format(cookbook[name]["meal"]))
-        print("Take {} minute{} of cooking".format(cookbook[name]["prep_time"], "s" if cookbook[name]["prep_time"] > 1 else ""))
+        print("Take {} minute{} of cooking".format(
+            cookbook[name]["prep_time"],
+            "s" if cookbook[name]["prep_time"] > 1 else ""
+        ))
     else:
         print("Recipe does not exist.")
+
 
 def delRecipe(name):
     if name in cookbook:
@@ -36,12 +41,14 @@ def delRecipe(name):
     else:
         print("Recipe does not exist.")
 
+
 def IntInput(content):
-     while True:
+    while True:
         try:
-            return(int(input(content)))
-        except:
+            return (int(input(content)))
+        except Exception:
             print("That's not a valid option !")
+
 
 def addRecipe():
     key = input("Enter a name: ")
@@ -53,6 +60,7 @@ def addRecipe():
     cookbook[key] = value
     print("Recipe added !")
 
+
 def main():
     print("Welcome to the Python Cookbook !")
     print("List of available option:\n\
@@ -60,8 +68,7 @@ def main():
             2: Delete a recipe\n\
             3: Print a recipe\n\
             4: Print the cookbook\n\
-            5: Quit"
-    )
+            5: Quit")
     while True:
         opt = -1
         while True:
@@ -82,5 +89,6 @@ def main():
             case 5:
                 print("GoodBye")
                 break
+
 
 main()
