@@ -1,4 +1,4 @@
-from getpass import getuser
+import os
 import time
 from random import randint
 
@@ -15,7 +15,7 @@ def log(fn):
             format = "s"
         with open('machine.log', 'a') as f:
             f.write('({user})Running: {task: <18} [ exec-time = {exectime:.3f} {format} ]\n'.format(
-                user=getuser(),
+                user=os.environ["USER"],
                 task=str(fn.__name__).replace("_", " ").title(),
                 exectime=elapsed,
                 format=format))

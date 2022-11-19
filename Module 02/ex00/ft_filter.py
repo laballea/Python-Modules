@@ -12,14 +12,11 @@ def ft_filter(function_to_apply, iterable):
     """
     if (not isinstance(iterable, Iterable)):
         raise TypeError("{} is not iterable".format(type(iterable).__name__))
+    if (function_to_apply == None):
+        raise TypeError("{} is not iterable".format(type(iterable).__name__))
     try:
         for el in iterable:
             if (function_to_apply(el)):
                 yield el
     except Exception:
         return None
-
-
-numbers = [10, 15, 21, 33, 42, 55]
-print(filter(lambda dum: not (dum % 2), numbers))
-print(ft_filter(lambda dum: not (dum % 2), numbers))

@@ -36,6 +36,12 @@ def doom_printer(obj):
 
 
 if __name__ == "__main__":
+    obj = what_are_the_vars(None)
+    doom_printer(obj)
+    obj = what_are_the_vars(lambda x: x, function=what_are_the_vars)
+    doom_printer(obj)
+    obj = what_are_the_vars(3, var_0=2)
+    doom_printer(obj)
     obj = what_are_the_vars(7)
     doom_printer(obj)
     obj = what_are_the_vars(None, [])

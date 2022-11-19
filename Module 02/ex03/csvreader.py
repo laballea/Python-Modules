@@ -45,7 +45,7 @@ class CsvReader():
         list: representing the data (when self.header is True).
         None: (when self.header is False).
         """
-        if (self.header is None):
+        if (not self.header):
             return None
         else:
             self.file_obj.seek(0)
@@ -61,3 +61,4 @@ with CsvReader("good.csv") as file:
         print(data)
         header = file.getheader()
         print(header)
+

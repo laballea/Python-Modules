@@ -12,13 +12,11 @@ def ft_map(function_to_apply, iterable):
     """
     if (not isinstance(iterable, Iterable)):
         raise TypeError("{} is not iterable".format(type(iterable).__name__))
+    if (function_to_apply == None):
+        raise TypeError("{} is not iterable".format(type(iterable).__name__))
+
     try:
         for el in iterable:
             yield function_to_apply(el)
     except Exception:
         return None
-
-
-numbers = [10, 15, 21, 33, 42, 55]
-print(list(map(lambda x: x * 2 + 3, numbers)))
-print(list(ft_map(lambda x: x * 2 + 3, numbers)))
