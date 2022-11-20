@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from sklearn.cluster import KMeans
-
+import matplotlib.colors as mcolors
 
 class CsvReader():
     def __init__(self, filename=None, sep=",", header=False, skip_top=0, skip_bottom=0):
@@ -106,9 +106,9 @@ def drawK(title, header, X, fit):
         axes.set_xlabel(header[0])
         axes.set_ylabel(header[1])
         axes.set_zlabel(header[2])
-        color = ["red", "blue", "green", "magenta"]
+        color = mcolors.TABLEAU_COLORS
         for point, clr in zip(X, fit):
-            plt.plot(point[0], point[1], point[2], marker=("."), color=color[clr])
+            plt.plot(point[0], point[1], point[2], marker=("."), color=list(color.values())[clr])
         plt.title(title)
 
     def draw2d(header, wich):
@@ -116,9 +116,9 @@ def drawK(title, header, X, fit):
         axes = plt.axes()
         axes.set_xlabel(header[wich[0]])
         axes.set_ylabel(header[wich[1]])
-        color = ["red", "blue", "green", "magenta"]
+        color = mcolors.TABLEAU_COLORS
         for point, clr in zip(X, fit):
-            plt.plot(point[wich[0]], point[wich[1]], marker=("."), color=color[clr])
+            plt.plot(point[wich[0]], point[wich[1]], marker=("."), color=list(color.values())[clr])
         plt.title(title)
     draw3d()
     for idx, _ in enumerate(header):
@@ -173,7 +173,6 @@ class KmeansClustering:
             if (result[2] > np.sum(track[2])):
                 result = [idx, track, np.sum(track[2])]
         self.centroids = result[1][1]
-        print(result[2])
 
     def fit(self, X):
         """
@@ -252,6 +251,9 @@ try:
     max_iter = 20  # default value of max_iter
     if (len(sys.argv) >= 3):
         ncentroid = int(sys.argv[2].split('=')[1])  # if ncentroid specified on param
+        if (ncentroid >= 10):
+            print("ncentroid too high, max is 9")
+            sys.exit()
         if (len(sys.argv) >= 4):
             max_iter = int(sys.argv[3].split('=')[1])  # if max_iter specified on param
     with CsvReader(path) as f:
@@ -262,10 +264,10 @@ try:
         kmClust.fit(array)  # find best clustering
         mine_pred = kmClust.predict(array)
 
-        model = KMeans(n_clusters=4, random_state=0).fit(array)
+        model = KMeans(n_clusters=ncentroid, random_state=0).fit(array)
         kmean_pred = model.predict(array)
-
-        drawK("mine", header, array, mine_pred)
+        error_prct = np.mean(mine_pred==kmean_pred)
+        drawK("mine", header, array, mine_pred,)
         drawK("kmean", header, array, kmean_pred)
         kmClust.identify(array)
         plt.show()

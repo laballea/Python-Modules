@@ -6,6 +6,9 @@ from matplotlib import pyplot as plt
 
 
 class ImageProcessor():
+    def __init__(self):
+        print("ImageProcessor init")
+
     def load(self, path):
         """
             opens the PNG file specified by the path argument and returns an
@@ -27,16 +30,3 @@ class ImageProcessor():
         """
         plt.imshow(array, interpolation='nearest')
         plt.show()
-
-
-imp = ImageProcessor()
-arr = imp.load("non_existing_file.png")
-print(arr)
-arr = imp.load("empty_file.png")
-print(arr)
-arr = imp.load("42AI.png")
-print(arr)
-imp.display(arr)
-arr = imp.load("elon_canaGAN.png")
-print(arr)
-imp.display(arr)

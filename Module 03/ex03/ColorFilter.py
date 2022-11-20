@@ -8,6 +8,9 @@ def clamp(n, minn, maxn):
 
 
 class ImageProcessor():
+    def __init__(self):
+        print("ImageProcessor init")
+
     def load(self, path):
         """
             opens the PNG file specified by the path argument and returns an
@@ -32,6 +35,9 @@ class ImageProcessor():
 
 
 class ColorFilter():
+    def __init__(self):
+        print("ColorFilter init")
+
     def invert(self, array):
         """
         Inverts the color of the image received as a numpy array.
@@ -46,11 +52,13 @@ class ColorFilter():
         -------
         This function should not raise any Exception.
         """
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
+        try:
+            if (not isinstance(array, np.ndarray)):
+                return None
+            im_IVT = 255 - array.copy()
+            return im_IVT
+        except:
             return None
-        im_IVT = 255 - array.copy()
-        return im_IVT
 
     def to_blue(self, array):
         """
@@ -66,12 +74,14 @@ class ColorFilter():
         -------
         This function should not raise any Exception.
         """
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
+        try:
+            if (not isinstance(array, np.ndarray)):
+                return None
+            im_B = array.copy()
+            im_B[:, :, (0, 1)] = 0
+            return im_B
+        except:
             return None
-        im_B = array.copy()
-        im_B[:, :, (0, 1)] = 0
-        return im_B
 
     def to_green(self, array):
         """
@@ -87,12 +97,14 @@ class ColorFilter():
         -------
         This function should not raise any Exception.
         """
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
+        try:
+            if (not isinstance(array, np.ndarray)):
+                return None
+            im_G = array.copy()
+            im_G[:, :, (0, 2)] = 0
+            return im_G
+        except:
             return None
-        im_G = array.copy()
-        im_G[:, :, (0, 2)] = 0
-        return im_G
 
     def to_red(self, array):
         """
@@ -108,12 +120,14 @@ class ColorFilter():
         -------
         This function should not raise any Exception.
         """
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
+        try:
+            if (not isinstance(array, np.ndarray)):
+                return None
+            im_R = array.copy()
+            im_R[:, :, (1, 2)] = 0
+            return im_R
+        except:
             return None
-        im_R = array.copy()
-        im_R[:, :, (1, 2)] = 0
-        return im_R
 
     def to_celluloid(self, array):
         """
@@ -134,15 +148,17 @@ class ColorFilter():
         -------
         This function should not raise any Exception.
         """
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
+        try:
+            if (not isinstance(array, np.ndarray)):
+                return None
+            im_cel = array.copy()
+            n_shade = 10
+            for x in range(0, n_shade):
+                shade = array[:, :, :] > (x) * 255 / n_shade
+                im_cel[shade] = (x + 1) * 255 / n_shade
+            return im_cel
+        except:
             return None
-        im_cel = array.copy()
-        n_shade = 10
-        for x in range(0, n_shade):
-            shade = array[:, :, :] > (x) * 255 / n_shade
-            im_cel[shade] = (x + 1) * 255 / n_shade
-        return im_cel
 
     def to_grayscale(self, array, filter, **kwargs):
         """
@@ -163,35 +179,22 @@ class ColorFilter():
         -------
         This function should not raise any Exception.
         """
-        if (not (isinstance(filter, str) and filter in ["m", "mean", "w", "weight"])):
-            print("Invalid filter type !")
+        try:
+            if (not (isinstance(filter, str) and filter in ["m", "mean", "w", "weight"])):
+                return None
+            if (not isinstance(array, np.ndarray)):
+                return None
+            if (filter in ["w", "weight"] and not (kwargs["weights"] and
+                isinstance(kwargs["weights"], list) and
+                list(map(type, kwargs["weights"])) == [float, float, float] and sum(kwargs["weights"]) == 1)):
+                return None
+            im_gray = array.copy()
+            if (filter in ["m", "mean"]):
+                im_gray[:] = np.sum(im_gray, axis=-1, keepdims=1)/3
+            else:
+                im_gray[:] = np.sum(im_gray, axis=-1, keepdims=1)/3
+                im_gray = im_gray[:, :, :] * kwargs["weights"]
+
+            return im_gray
+        except:
             return None
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
-            return None
-        if (filter in ["w", "weight"] and not (kwargs["weights"] and
-            isinstance(kwargs["weights"], list) and
-            list(map(type, kwargs["weights"])) == [float, float, float] and sum(kwargs["weights"]) == 1)):
-            print("Invalid weight type !")
-            return None
-        im_gray = array.copy()
-        if (filter in ["m", "mean"]):
-            im_gray[:] = np.sum(im_gray, axis=-1, keepdims=1)/3
-        else:
-            im_gray[:] = np.sum(im_gray, axis=-1, keepdims=1)/3
-            im_gray = im_gray[:, :, :] * kwargs["weights"]
-
-        return im_gray
-
-
-imp = ImageProcessor()
-clrFilter = ColorFilter()
-arr = imp.load("elon_canaGAN.png")
-
-imp.display(clrFilter.invert(arr))
-imp.display(clrFilter.to_blue(arr))
-imp.display(clrFilter.to_green(arr))
-imp.display(clrFilter.to_red(arr))
-imp.display(clrFilter.to_celluloid(arr))
-imp.display(clrFilter.to_grayscale(arr, "m"))
-imp.display(clrFilter.to_grayscale(arr, "w", weights=[0.2, 0.3, 0.5]))

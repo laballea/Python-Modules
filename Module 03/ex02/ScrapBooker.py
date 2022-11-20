@@ -4,6 +4,9 @@ from matplotlib import pyplot as plt
 
 
 class ImageProcessor():
+    def __init__(self):
+        print("ImageProcessor init")
+
     def load(self, path):
         """
             opens the PNG file specified by the path argument and returns an
@@ -28,6 +31,9 @@ class ImageProcessor():
 
 
 class ScrapBooker():
+    def __init__(self):
+        print("Scrap init")
+
     def crop(self, array, dim, position=(0, 0)):
         """
         Crops the image as a rectangle via dim arguments (being the new height
@@ -45,19 +51,18 @@ class ScrapBooker():
         ------
         This function should not raise any Exception.
         """
-        if (not (isinstance(dim, tuple) and list(map(type, dim)) == [int, int] and len(dim) == 2)):
-            print("Invalid dimensions type !")
+        try:
+            if (not (isinstance(dim, tuple) and list(map(type, dim)) == [int, int] and len(dim) == 2)):
+                return None
+            if (not (isinstance(position, tuple) and list(map(type, position)) == [int, int] and len(position) == 2)):
+                return None
+            if (not isinstance(array, np.ndarray)):
+                return None
+            if (position[0] + dim[0] + 1 > array.shape[0] or position[1] + dim[1] > array.shape[1]):
+                return None
+            return array[position[0]:dim[0] + 1, position[1]:dim[1]]
+        except Exception:
             return None
-        if (not (isinstance(position, tuple) and list(map(type, position)) == [int, int] and len(position) == 2)):
-            print("Invalid position type !")
-            return None
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
-            return None
-        if (position[0] + dim[0] + 1 > array.shape[0] or position[1] + dim[1] > array.shape[1]):
-            print("Combinaison of parameters not compatible !")
-            return None
-        return array[position[0]:dim[0] + 1, position[1]:dim[1]]
 
     def thin(self, array, n, axis):
         """
@@ -76,22 +81,22 @@ class ScrapBooker():
         ------
         This function should not raise any Exception.
         """
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
+        try:
+            if (not isinstance(array, np.ndarray)):
+                return None
+            if (not (isinstance(axis, int) or not (axis == 0 or axis == 1))):
+                return None
+            if (axis == 1):
+                axis = 0
+                max = array.shape[0]
+            else:
+                axis = 1
+                max = array.shape[1]
+            if (not (isinstance(n, int) and n >= 0 and n <= max)):
+                return None
+            return np.delete(array, [x - 1 for x in range(n, max + 1, n)], axis=axis)
+        except Exception:
             return None
-        if (not (isinstance(axis, int) and (axis == 0 or axis == 1))):
-            print("Invalid axis type !")
-            return None
-        if (axis == 1):
-            axis = 0
-            max = array.shape[0]
-        else:
-            axis = 1
-            max = array.shape[1]
-        if (not (isinstance(n, int) and n >= 0 and n <= max)):
-            print("Invalid n type !")
-            return None
-        return np.delete(array, [x - 1 for x in range(n, max + 1, n)], axis=axis)
 
     def juxtapose(self, array, n, axis):
         """
@@ -109,16 +114,16 @@ class ScrapBooker():
         -------
         This function should not raise any Exception.
         """
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
+        try:
+            if (not isinstance(array, np.ndarray)):
+                return None
+            if (not (isinstance(axis, int) or not (axis == 0 or axis == 1))):
+                return None
+            if (not isinstance(n, int) or n <= 0):
+                return None
+            return np.concatenate([array] * n, axis=axis)
+        except Exception:
             return None
-        if (not (isinstance(axis, int) and (axis == 0 or axis == 1))):
-            print("Invalid axis type !")
-            return None
-        if (not isinstance(n, int)):
-            print("Invalid n type !")
-            return None
-        return np.concatenate([array] * n, axis=axis)
 
     def mosaic(self, array, dim):
         """
@@ -136,27 +141,13 @@ class ScrapBooker():
         -------
         This function should not raise any Exception.
         """
-        if (not isinstance(array, np.ndarray)):
-            print("Invalid array type !")
+        try:
+
+            if (not isinstance(array, np.ndarray)):
+                return None
+            if (not (isinstance(dim, tuple) and list(map(type, dim)) == [int, int] and len(dim) == 2)):
+                return None
+            array = np.concatenate([array] * dim[0], axis=0)
+            return np.concatenate([array] * dim[1], axis=1)
+        except Exception:
             return None
-        if (not (isinstance(dim, tuple) and list(map(type, dim)) == [int, int] and len(dim) == 2)):
-            print("Invalid dim type !")
-            return None
-        array = np.concatenate([array] * dim[0], axis=0)
-        return np.concatenate([array] * dim[1], axis=1)
-
-
-spb = ScrapBooker()
-arr1 = np.arange(0, 25).reshape(5, 5)
-print(spb.crop(arr1, (1, 3), (1, 0)))
-arr2 = np.array("A B C D E F G H I".split() * 6).reshape(-1, 9)
-print(spb.thin(arr2, 3, 0))
-arr3 = np.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
-print(spb.juxtapose(arr3, 3, 1))
-
-imp = ImageProcessor()
-arr = imp.load("42AI.png")
-imp.display(spb.crop(arr, (100, 100), (0, 0)))
-imp.display(spb.thin(arr, 3, 0))
-imp.display(spb.juxtapose(arr, 3, 1))
-imp.display(spb.mosaic(arr, (3, 3)))
