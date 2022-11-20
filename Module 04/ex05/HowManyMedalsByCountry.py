@@ -1,30 +1,42 @@
+def how_many_medals_by_country(data, country):
+    """
+        The function returns a dictionary of dictionaries giving the number and type of
+        medal for each competition where the country delegation earned medals.
+        args:
+            • a pandas.DataFrame which contains the dataset
+            • a country name. (string)
+        return:
+            Dictionary: The keys of the main
+                dictionary are the Olympic games' years. In each year's dictionary, the key are 'G', 'S',
+                'B' corresponding to the type of medals won.
+    """
+    team_sports = ['Basketball', 'Football',  'Tug-Of-War', 'Badminton', 'Sailing', 'Handball', 'Water Polo', 'Hockey', 'Rowing', 'Bobsleigh', 'Softball', 'Volleyball',\
+         'Synchronized Swimming', 'Baseball', 'Rugby Sevens', 'Rugby', 'Lacrosse', 'Polo']
 
-import pandas
-from FileLoader import FileLoader
+    
+    # every years who the country have almost one medal
+    years = data.query("Team == '"+country+"' and not Medal.isnull()")['Year'].unique()
+    dict = {}
+    for y in years:
+        dict[y] = {"G":0, "S":0, "B":0}
+    country_and_teams_sports = data.query("Team == '"+country+"' and not Medal.isnull() and Sport in "+str(team_sports))
+    country_group = country_and_teams_sports.groupby(['Year', 'Event', 'Medal'])
 
+    for group_key, group_value in country_group:
+        year = group_key[0]
+        event = group_key[1]
+        medal = group_key[2][0]
+        gsv_dic = dict[year]
+        gsv_dic[medal] += 1
+        dict[year] = gsv_dic
 
-team_sports = ["Basketball", "Football", "Tug-Of-War", "Badminton",
-               "Handball", "Water Polo", "Hockey", "Rowing", "Beach Volleyball",
-               "Volleyball", "Synchronized Swimming", "Baseball",
-               "Rugby", "Lacrosse", "Polo"]
-
-
-def how_many_medals_by_country(df: pandas.DataFrame, country: str):
-    result = {}
-    team_cond = df["Team"] == country
-    earn_medal_cond = df["Medal"].notna()
-    country_df = df[team_cond & earn_medal_cond]
-    years_list = country_df.drop_duplicates(subset="Year")["Year"].sort_values()
-    for year in years_list:
-        by_year = country_df[(country_df["Year"] == year)].drop_duplicates(subset=["Season", "City", "Sport", "Event", "Medal"])
-        result[year] = {
-            "G": by_year[(by_year['Medal'] == "Gold")].shape[0],
-            "S": by_year[(by_year['Medal'] == "Silver")].shape[0],
-            "B": by_year[(by_year['Medal'] == "Bronze")].shape[0]
-        }
-    return result
-
-
-loader = FileLoader()
-data = loader.load("../ressource/athlete_events.csv")
-print(how_many_medals_by_country(data, "France"))
+    country_without_teams_sports = data.query("Team == '"+country+"' and not Medal.isnull() and Sport not in "+str(team_sports))
+    country_group2 = country_without_teams_sports.groupby(['Year'])
+    for year, group_value in country_group2:
+        medals = group_value['Medal']
+        events = group_value['Event']
+        for medal, event in zip(medals, events):
+            gsv_dic = dict[year]
+            gsv_dic[medal[0]] += 1
+            dict[year] = gsv_dic   
+    return dict

@@ -13,8 +13,3 @@ def how_many_medals(df: pandas.DataFrame, name: str):
             "B": athlete[(athlete['Year'] == year) & (athlete['Medal'] == "Bronze")].shape[0]
         }
     return result
-
-
-loader = FileLoader()
-data = loader.load("../ressource/athlete_events.csv")
-print(how_many_medals(data, "Kjetil Andr Aamodt"))

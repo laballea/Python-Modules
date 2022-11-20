@@ -1,14 +1,13 @@
 from matplotlib import pyplot as plt
 import pandas
 import seaborn
-from FileLoader import FileLoader
 
 
 class Komparator():
     def __init__(self, df: pandas.DataFrame):
         self.df = df
 
-    def compare_box_plots(self, categorical_var: list, numerical_var: list | str):
+    def compare_box_plots(self, categorical_var: list, numerical_var: list):
         """
             displays a series of box plots to compare how the distribution of the numerical variable changes
             if we only consider the subpopulation which belongs to each category. There should
@@ -51,12 +50,3 @@ class Komparator():
         except Exception as inst:
             print("Something went wrong :/")
             print(inst)
-
-
-loader = FileLoader()
-data = loader.load("../ressource/athlete_events.csv")
-komp = Komparator(data)
-komp.compare_box_plots(["Sex"], ["Weight", "Height"])
-komp.density(["Sex"], ["Weight", "Height"])
-komp.compare_histograms(["Sex"], ["Weight", "Height"])
-plt.show()

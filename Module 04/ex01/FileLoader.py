@@ -9,7 +9,6 @@ class FileLoader():
             returns the dataset loaded as a pandas.DataFrame.
         """
         try:
-            print(self, path)
             data = pandas.read_csv(path)
             print("Loading data set of dimensions {} x {}".format(data.shape[0], data.shape[1]))
             return data
@@ -23,7 +22,10 @@ class FileLoader():
             displays the first n rows of the dataset if n is positive, or the last n rows if n is
             negative
         """
-        if (n > 0):
-            print(df.head(n))
-        else:
-            print(df.tail(-n))
+        try:
+            if (n > 0):
+                print(df.head(n))
+            else:
+                print(df.tail(-n))
+        except:
+            return None

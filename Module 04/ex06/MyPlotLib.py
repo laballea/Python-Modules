@@ -1,6 +1,5 @@
 from matplotlib import pyplot as plt
 import pandas
-from FileLoader import FileLoader
 import seaborn
 
 
@@ -37,11 +36,3 @@ class MyPlotLib():
         """
         seaborn.boxplot(data[features])
         plt.show()
-
-
-loader = FileLoader()
-data = loader.load("../ressource/athlete_events.csv")
-MyPlotLib.histogram(data, ["Weight", "Height"])
-MyPlotLib.density(data, ["Weight", "Height"])
-MyPlotLib.pair_plot(data, ["Weight", "Height"])
-MyPlotLib.box_plot(data, ["Weight", "Height"])
